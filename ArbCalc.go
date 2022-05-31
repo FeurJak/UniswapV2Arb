@@ -1,3 +1,12 @@
+
+/*
+Ra: Ordered Reserves for Token As for all Lps within the Route.
+Rb: Ordered Reserves for Token Bs for all Lps within the Route.
+Fees: Ordered Lp Fees (ie. 0.9975) or all Lps within the Route
+_reverseFlags: ordered direction of Token Outputs for all Lps within the Route:
+	- I.e. if for Lp[0], TokenIn = TokenA , TokenOut = TokenB, then _reverseFlags[0] = false, else _reverseFlags[0] = true
+*/
+
 func ArbCalc(Ra []*big.Float, Rb []*big.Float, Fees []*big.Float, _reverseFlags []bool) (*big.Int, *big.Int) {
 
 	_OptimalInput := new(big.Float)
