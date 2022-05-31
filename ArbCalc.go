@@ -40,20 +40,21 @@ func ArbCalc(Ra []*big.Float, Rb []*big.Float, Fees []*big.Float, _reverseFlags 
 			}
 
 		} else {
+			_fee_h := big.NewFloat(0).Quo(FeeProduct[i], _stack.FeesFloat[0])
 			if !_reverseFlags[i] { // not Reversed
-				Ea[i] = big.NewFloat(0).Quo(big.NewFloat(0).Mul(Ra[i], Ea[i-1]), big.NewFloat(0).Add(Ra[i], big.NewFloat(0).Mul(Eb[i-1], FeeProduct[i-1])))
-				Eb[i] = big.NewFloat(0).Quo(big.NewFloat(0).Mul(Rb[i], Eb[i-1]), big.NewFloat(0).Add(Ra[i], big.NewFloat(0).Mul(Eb[i-1], FeeProduct[i-1])))
+				Ea[i] = big.NewFloat(0).Quo(big.NewFloat(0).Mul(Ra[i], Ea[i-1]), big.NewFloat(0).Add(Ra[i], big.NewFloat(0).Mul(Eb[i-1], _fee_h)))
+				Eb[i] = big.NewFloat(0).Quo(big.NewFloat(0).Mul(Rb[i], Eb[i-1]), big.NewFloat(0).Add(Ra[i], big.NewFloat(0).Mul(Eb[i-1], _fee_h)))
 			} else {
 
-				Ea[i] = big.NewFloat(0).Quo(big.NewFloat(0).Mul(Rb[i], Ea[i-1]), big.NewFloat(0).Add(Rb[i], big.NewFloat(0).Mul(Eb[i-1], FeeProduct[i-1])))
-				Eb[i] = big.NewFloat(0).Quo(big.NewFloat(0).Mul(Ra[i], Eb[i-1]), big.NewFloat(0).Add(Rb[i], big.NewFloat(0).Mul(Eb[i-1], FeeProduct[i-1])))
+				Ea[i] = big.NewFloat(0).Quo(big.NewFloat(0).Mul(Rb[i], Ea[i-1]), big.NewFloat(0).Add(Rb[i], big.NewFloat(0).Mul(Eb[i-1], _fee_h)))
+				Eb[i] = big.NewFloat(0).Quo(big.NewFloat(0).Mul(Ra[i], Eb[i-1]), big.NewFloat(0).Add(Rb[i], big.NewFloat(0).Mul(Eb[i-1], _fee_h)))
 
 			}
 		}
 	}
 	// Then We calculate Input Amount
 	_Numerator := big.NewFloat(0).Sub(big.NewFloat(0).Sqrt(big.NewFloat(0).Mul(big.NewFloat(0).Mul(Ea[_lp_len-1], Eb[_lp_len-1]), FeeProduct[_lp_len-1])), Ea[_lp_len-1])
-	_OptimalInput.Quo(_Numerator, FeeProduct[_lp_len-2])
+	_OptimalInput.Quo(_Numerator, Fees[0])
 	if _OptimalInput.Cmp(big.NewFloat(0)) > 0 {
 		_OptimalInput.Int(_OptimalInput_int)
 		_Lambda.Sqrt(big.NewFloat(0).Quo(big.NewFloat(0).Mul(Eb[_lp_len-1], FeeProduct[_lp_len-1]), Ea[_lp_len-1]))
